@@ -1,0 +1,26 @@
+.box {
+    margin: 20em 4em;
+    border: 2px solid black;
+    height: 120px;
+    width: 120px;
+    float: left;
+}
+
+.box:hover {
+    color: rgba(255, 255, 255, 1);
+    box-shadow: -10px 20px 20px black;
+}
+
+#knapp {
+    height: 160px;
+    width: 160px;
+    position: absolute;
+    top: 10%;
+    left: 40%;
+    background: url(Vedlegg_V18/last\ ned.png)
+}
+
+#poeng {
+    height: 100px;
+    width: 200px;
+}
