@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        body{
+            margin: 0 0;
+            padding: 0 0;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="grid" width="1201" height="801"></canvas>
+    <div id="input">
+        <input value='60' onchange='change_size()'  type="number" id="res">
+        <input type="number">
+        <input type="number">
+        <button onclick="play()">Start</button>
+        <button onclick="step()">Step</button>
+    </div>
+    <script>
+        const can = document.getElementById("grid");
+        const ctx = can.getContext("2d");
+        const width = can.width;
+        const height = can.height;
+        let res = document.getElementById('res').value; 
+        const speed= 1000/60 // Kan implementere en slider senere
+        const padding=[0,0]
+        let grid=function (){
+            let empt_arr=[];
+            for(let iy=0; iy<Math.floor(height/res);iy++){
+                empt_arr.push([]);
+                for(let ix=0;ix<Math.floor(width/res);ix++)
+                    empt_arr[iy].push(0);
+            }
+            return empt_arr
+        }();
+
+        init();
+
+        function draw_grid(){
+            ctx.fillStyle="white";
+            ctx.fillRect(0,0,width,height);
+            ctx.fillStyle="lime";
+            for(let iy=0;iy<grid.length; iy++)
+                for(let ix=0; ix<grid[iy].length;ix++){
+                    ctx.beginPath();
+                    if(grid[iy][ix]) ctx.fillRect(res*ix+1,res*iy+1,res-2,res-2);
+                    else ctx.rect(res*ix,res*iy,res,res);
+                    ctx.stroke();
+                }
+        }
+
+		function change_size(){	
+			res=document.getElementById('res').value; 
+			grid=function (){
+            	let empt_arr=[];
+            	for(let iy=0; iy<Math.floor(height/res);iy++){
+                	empt_arr.push([]);
+               		for(let ix=0;ix<Math.floor(width/res);ix++)
+                    	empt_arr[iy].push(0);
+            	}
+            	return empt_arr
+        	}();
+			draw_grid();
+		}
+
+        function step(){
+            let change=[]
+            for(let iy =0; iy <grid.length;iy++)
+                for(let ix=0; ix<grid[iy].length; ix++){
+                    if (will_survive([iy,ix]) ^ grid[iy][ix]) change.push([iy,ix]);
+                }
+            for(cell of change)
+                grid[cell[0]][cell[1]]=grid[cell[0]][cell[1]]^1;
+            draw_grid();
+        }
+       
+        function play(){
+            setInterval(step,speed);
+        }
+
+        function init(){
+            draw_grid();
+            //document.addEventListener("mousedown", mouse);
+			document.addEventListener("click",mouse);
+        }
+
+        function will_survive(cell){
+            let alive_n=0
+            for(let iy=-1; iy<2; iy++)
+                for(let ix=-1;ix<2;ix++)
+                    if (iy || ix)
+                        if(cell[0]+iy<grid.length && cell[0]+iy>=0)
+                            if(cell[1]+ix<grid[cell[0]+iy].length&& cell[1]+ix>=0)
+                                if(grid[iy+cell[0]][ix+cell[1]]) alive_n++;
+            return (grid[cell[0]][cell[1]] && alive_n == 2)|| alive_n == 3
+        }
+
+        
+        
+        
+        function mouse(evt) {
+            let m_pos=[Math.floor(evt.clientY/res),Math.floor(evt.clientX/res)]
+            if(m_pos[0]<grid.length && m_pos[0]>=0)
+                if(m_pos[1]<grid[0].length&& m_pos[1]>=0)
+                    grid[m_pos[0]][m_pos[1]]=grid[m_pos[0]][m_pos[1]]^1;
+            draw_grid();
+        }
+
+        
+
+
+        
+    </script>
+</body>
+
+</html>
